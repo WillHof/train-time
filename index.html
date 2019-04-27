@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="jumbotron text-center">
+                    <h1>Train Schedule</h1>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">Name</th>
+                            <th scope="col">Destination</th>
+                            <th scope="col">Frequency (mins)</th>
+                            <th scope="col">Next Arrival</th>
+                            <th scope="col">Mins Away</th>
+                        </tr>
+                    </thead>
+                    <tbody id="trainInfo">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h3>Add Train</h3>
+                        <form>
+                            <div class="form-group">
+                                <label for="trainName">Train Name</label>
+                                <input type="text" class="form-control" id="trainName">
+                            </div>
+                            <div class="form-group">
+                                <label for="destination">Destination</label>
+                                <input type="text" class="form-control" id="destination">
+                            </div>
+                            <div class="form-group">
+                                <label for="firstTrainTime">First Train Time</label>
+                                <input type="text" class="form-control" id="firstTrainTime">
+                            </div>
+                            <div class="form-group">
+                                <label for="frequency">Frequency (min)</label>
+                                <input type="text" class="form-control" id="frequency">
+                            </div>
+                            <input id="save" type="submit" class="btn btn-secondary" value="Save">
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+    crossorigin="anonymous"></script>
+
+<script src="https://www.gstatic.com/firebasejs/5.10.1/firebase.js"></script>
+<script>
+    // Initialize Firebase
+    var config = {
+        apiKey: "AIzaSyAg5nhcxPOHvDPfC368Gt6v7Zi3gIwygzg",
+        authDomain: "train-time-42069.firebaseapp.com",
+        databaseURL: "https://train-time-42069.firebaseio.com",
+        projectId: "train-time-42069",
+        storageBucket: "train-time-42069.appspot.com",
+        messagingSenderId: "201700585917"
+    };
+    firebase.initializeApp(config);
+</script>
+<script>
+
+    $(document).ready(function () {
+        var database = firebase.database()
+        $("#save").on("click", function (e) {
+            e.preventDefault()
+
+            var trainName = $("#trainName").val().trim()
+            var destination = $("#destination").val().trim()
+            var firstTrainTime = $("#firstTrainTime").val().trim()
+            var frequency = $("#frequency").val().trim()
+
+            database.ref().push({
+                trainName: trainName,
+                destination: destination,
+                firstTrainTime: firstTrainTime,
+                frequency: frequency
+            });
+        });
+        database.ref().on("child_added", function (snapshot) {
+            console.log("this worked")
+            var nextArrival = "calulate this"
+            var minutesAway = "calculate this"
+            var data = snapshot.val()
+            var html = `
+                <tr>
+                            <td>${data.trainName}</td>
+                            <td>${data.destination}</td>
+                            <td>${data.frequency}</td>
+                            <td>${data.nextArrival}</td>
+                            <td>${nextArrival}</td>
+                            </tr>
+ `
+            $("#trainInfo").append(html);
+
+        })
+    })
+</script>
+
+</body>
+
+</html>
